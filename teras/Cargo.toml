@@ -11,6 +11,7 @@ members = [
     "crates/teras-suap",
     "crates/teras-benteng",
     "crates/teras-integrasi",
+    "crates/teras-sandi",
     "crates/teras-cli",
 ]
 
@@ -69,6 +70,10 @@ clap = { version = "=4.5.1", features = ["derive"] }
 colored = "=2.1.0"
 hex = "=0.4.3"
 
+# Digital signature dependencies
+base64 = "=0.21.7"
+uuid = { version = "=1.7.0", features = ["v4", "serde"] }
+
 # Internal crates
 teras-core = { path = "crates/teras-core" }
 teras-kunci = { path = "crates/teras-kunci" }
@@ -76,6 +81,7 @@ teras-lindung = { path = "crates/teras-lindung" }
 teras-jejak = { path = "crates/teras-jejak" }
 teras-suap = { path = "crates/teras-suap" }
 teras-integrasi = { path = "crates/teras-integrasi" }
+teras-sandi = { path = "crates/teras-sandi" }
 
 [profile.release]
 lto = true

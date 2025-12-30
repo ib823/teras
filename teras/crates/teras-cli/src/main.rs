@@ -7,7 +7,7 @@ use colored::Colorize;
 
 mod commands;
 
-use commands::{audit, crypto, feed, init};
+use commands::{audit, crypto, feed, init, sandi};
 
 /// TERAS Security Platform CLI
 #[derive(Parser)]
@@ -47,6 +47,9 @@ enum Commands {
 
     /// Cryptographic operations
     Crypto(crypto::CryptoArgs),
+
+    /// Digital signature operations
+    Sandi(sandi::SandiArgs),
 }
 
 #[tokio::main]
@@ -58,6 +61,7 @@ async fn main() {
         Commands::Feed(args) => feed::execute(args, cli.verbose).await,
         Commands::Audit(args) => audit::execute(args, cli.verbose).await,
         Commands::Crypto(args) => crypto::execute(args, cli.verbose).await,
+        Commands::Sandi(args) => sandi::execute(args, cli.verbose).await,
     };
 
     if let Err(e) = result {

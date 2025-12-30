@@ -15,6 +15,7 @@ teras-core = { workspace = true }
 teras-integrasi = { workspace = true }
 teras-suap = { workspace = true }
 teras-jejak = { workspace = true }
+teras-sandi = { workspace = true }
 
 # CLI framework
 clap = { version = "=4.5.1", features = ["derive"] }

@@ -100,6 +100,14 @@ impl Dilithium3Signature {
     pub fn as_bytes(&self) -> &[u8] {
         &self.sig
     }
+
+    /// Create signature from raw bytes.
+    #[must_use]
+    pub fn from_bytes(bytes: &[u8]) -> Self {
+        Self {
+            sig: bytes.to_vec(),
+        }
+    }
 }
 
 #[cfg(test)]

@@ -106,6 +106,34 @@ pub enum TerasError {
         /// Error message.
         message: String,
     },
+
+    // Serialization errors
+    /// Serialization failed.
+    SerializationFailed {
+        /// The type that failed to serialize.
+        type_name: String,
+        /// Reason for failure.
+        reason: String,
+    },
+    /// Deserialization failed.
+    DeserializationFailed {
+        /// The type that failed to deserialize.
+        type_name: String,
+        /// Reason for failure.
+        reason: String,
+    },
+
+    // Signature errors
+    /// Key not found in keystore.
+    KeyNotFound {
+        /// The key ID that was not found.
+        key_id: String,
+    },
+    /// Document not found.
+    DocumentNotFound {
+        /// The document ID that was not found.
+        document_id: String,
+    },
 }
 
 impl fmt::Display for TerasError {
@@ -186,6 +214,18 @@ impl fmt::Display for TerasError {
             }
             Self::ConfigurationError { component, message } => {
                 write!(f, "Configuration error in {}: {}", component, message)
+            }
+            Self::SerializationFailed { type_name, reason } => {
+                write!(f, "Failed to serialize {}: {}", type_name, reason)
+            }
+            Self::DeserializationFailed { type_name, reason } => {
+                write!(f, "Failed to deserialize {}: {}", type_name, reason)
+            }
+            Self::KeyNotFound { key_id } => {
+                write!(f, "Key not found: {}", key_id)
+            }
+            Self::DocumentNotFound { document_id } => {
+                write!(f, "Document not found: {}", document_id)
             }
         }
     }

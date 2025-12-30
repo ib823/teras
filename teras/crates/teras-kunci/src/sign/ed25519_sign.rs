@@ -96,6 +96,19 @@ impl Ed25519Signature {
     pub fn as_bytes(&self) -> &[u8; ED25519_SIG_SIZE] {
         &self.sig
     }
+
+    /// Create signature from raw bytes.
+    ///
+    /// Returns None if the slice length doesn't match.
+    #[must_use]
+    pub fn from_bytes(bytes: &[u8]) -> Option<Self> {
+        if bytes.len() != ED25519_SIG_SIZE {
+            return None;
+        }
+        let mut sig = [0u8; ED25519_SIG_SIZE];
+        sig.copy_from_slice(bytes);
+        Some(Self { sig })
+    }
 }
 
 #[cfg(test)]
