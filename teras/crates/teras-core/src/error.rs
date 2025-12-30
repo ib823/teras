@@ -97,6 +97,15 @@ pub enum TerasError {
 
     // Platform errors
     PlatformNotSupported(String),
+
+    // Configuration errors
+    /// Configuration error.
+    ConfigurationError {
+        /// Component with error.
+        component: String,
+        /// Error message.
+        message: String,
+    },
 }
 
 impl fmt::Display for TerasError {
@@ -174,6 +183,9 @@ impl fmt::Display for TerasError {
             Self::NetworkError(msg) => write!(f, "Network error: {}", msg),
             Self::PlatformNotSupported(platform) => {
                 write!(f, "Platform not supported: {}", platform)
+            }
+            Self::ConfigurationError { component, message } => {
+                write!(f, "Configuration error in {}: {}", component, message)
             }
         }
     }

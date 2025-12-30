@@ -10,6 +10,8 @@ members = [
     "crates/teras-jejak",
     "crates/teras-suap",
     "crates/teras-benteng",
+    "crates/teras-integrasi",
+    "crates/teras-cli",
 ]
 
 [workspace.package]
@@ -62,12 +64,18 @@ regex = "=1.10.3"
 # Testing utilities
 tempfile = "=3.10.1"
 
+# CLI dependencies
+clap = { version = "=4.5.1", features = ["derive"] }
+colored = "=2.1.0"
+hex = "=0.4.3"
+
 # Internal crates
 teras-core = { path = "crates/teras-core" }
 teras-kunci = { path = "crates/teras-kunci" }
 teras-lindung = { path = "crates/teras-lindung" }
 teras-jejak = { path = "crates/teras-jejak" }
 teras-suap = { path = "crates/teras-suap" }
+teras-integrasi = { path = "crates/teras-integrasi" }
 
 [profile.release]
 lto = true

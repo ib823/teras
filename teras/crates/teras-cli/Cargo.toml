@@ -1,0 +1,33 @@
+[package]
+name = "teras-cli"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "TERAS command-line interface"
+
+[[bin]]
+name = "teras"
+path = "src/main.rs"
+
+[dependencies]
+teras-core = { workspace = true }
+teras-integrasi = { workspace = true }
+teras-suap = { workspace = true }
+teras-jejak = { workspace = true }
+
+# CLI framework
+clap = { version = "=4.5.1", features = ["derive"] }
+
+# Output formatting
+colored = "=2.1.0"
+
+# Async
+tokio = { workspace = true }
+
+serde = { workspace = true }
+serde_json = { workspace = true }
+chrono = { workspace = true }
+
+# Hex encoding for hash display
+hex = "=0.4.3"
