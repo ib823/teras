@@ -4,7 +4,38 @@ version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
+description = "TERAS cryptographic primitives - HYBRID PQ+Classical"
 
 [dependencies]
 teras-core = { workspace = true }
-# Crypto dependencies will be added when implementing
+teras-lindung = { workspace = true }
+
+# Post-quantum crypto (using pqcrypto for Rust 1.75.0 compatibility)
+pqcrypto-kyber = { workspace = true }
+pqcrypto-dilithium = { workspace = true }
+pqcrypto-sphincsplus = { workspace = true }
+pqcrypto-traits = { workspace = true }
+
+# Classical crypto
+x25519-dalek = { workspace = true }
+ed25519-dalek = { workspace = true }
+aes-gcm = { workspace = true }
+chacha20poly1305 = { workspace = true }
+sha3 = { workspace = true }
+sha2 = { workspace = true }
+blake3 = { workspace = true }
+hkdf = { workspace = true }
+argon2 = { workspace = true }
+
+# Utilities
+rand = { workspace = true }
+rand_core = { workspace = true }
+subtle = { workspace = true }
+
+[dev-dependencies]
+hex = "=0.4.3"
+
+[features]
+default = []
+# Enable backup algorithms (SLH-DSA, etc.)
+backup-algorithms = []
