@@ -72,23 +72,16 @@ impl SignatureVerifier {
         }
 
         // Step 2: Verify hybrid signature (DECISION 4: both must verify)
-        let sig_result = self.verify_hybrid_signature_components(
+        let (dilithium_valid, ed25519_valid) = Self::verify_hybrid_signature_components(
             &signed_doc.document_hash,
             &signed_doc.dilithium_signature,
             &signed_doc.ed25519_signature,
             verifying_key,
         );
 
-        match sig_result {
-            Ok((dilithium_valid, ed25519_valid)) => {
-                result = result
-                    .with_dilithium(dilithium_valid)
-                    .with_ed25519(ed25519_valid);
-            }
-            Err(e) => {
-                result = VerificationResult::failure(e.to_string());
-            }
-        }
+        result = result
+            .with_dilithium(dilithium_valid)
+            .with_ed25519(ed25519_valid);
 
         // Log verification result (LAW 8)
         let action_result = if result.valid {
@@ -182,12 +175,11 @@ impl SignatureVerifier {
 
     /// Verify separate signature components.
     fn verify_hybrid_signature_components(
-        &self,
         hash: &[u8],
         dilithium_sig_bytes: &[u8],
         ed25519_sig_bytes: &[u8],
         verifying_key: &HybridVerifyingKey,
-    ) -> TerasResult<(bool, bool)> {
+    ) -> (bool, bool) {
         // Reconstruct Dilithium signature and verify
         let dilithium_sig = Dilithium3Signature::from_bytes(dilithium_sig_bytes);
         let dilithium_valid = verifying_key
@@ -204,7 +196,7 @@ impl SignatureVerifier {
             None => false,
         };
 
-        Ok((dilithium_valid, ed25519_valid))
+        (dilithium_valid, ed25519_valid)
     }
 
     fn log_verification(

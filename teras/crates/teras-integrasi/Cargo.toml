@@ -21,3 +21,5 @@ tokio = { workspace = true }
 [dev-dependencies]
 tempfile = "=3.10.1"
 tokio-test = "=0.4.3"
+teras-benteng = { workspace = true }
+teras-sandi = { workspace = true }

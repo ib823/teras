@@ -240,6 +240,7 @@ pub struct TimestampToken {
 
 /// Result of signature verification.
 #[derive(Debug, Clone)]
+#[allow(clippy::struct_excessive_bools)] // Intentional: each bool represents a distinct verification step
 pub struct VerificationResult {
     /// Whether the signature is valid.
     pub valid: bool,
@@ -346,18 +347,13 @@ impl VerificationResult {
 }
 
 /// Key algorithm identifier.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub enum SignatureAlgorithm {
     /// Hybrid: ML-DSA-65 (Dilithium3) + Ed25519.
     /// DECISION 4: This is the ONLY allowed algorithm.
     #[serde(rename = "ML-DSA-65+Ed25519")]
+    #[default]
     HybridDilithiumEd25519,
-}
-
-impl Default for SignatureAlgorithm {
-    fn default() -> Self {
-        Self::HybridDilithiumEd25519
-    }
 }
 
 impl std::fmt::Display for SignatureAlgorithm {

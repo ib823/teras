@@ -1,6 +1,6 @@
 //! Key storage abstraction for signing keys.
 //!
-//! LAW 4: All secrets use Secret<T> and are zeroized.
+//! LAW 4: All secrets use `Secret<T>` and are zeroized.
 //! LAW 8: All key operations are logged.
 
 use crate::types::{SignatureAlgorithm, SigningKeyInfo};
@@ -14,6 +14,10 @@ use teras_kunci::sign::{HybridSigner, HybridVerifyingKey};
 /// Trait for key storage backends.
 pub trait KeyStore: Send + Sync {
     /// Store a keypair.
+    ///
+    /// # Errors
+    ///
+    /// Returns error if storage fails.
     fn store(
         &mut self,
         key_id: &str,
@@ -22,15 +26,31 @@ pub trait KeyStore: Send + Sync {
     ) -> TerasResult<()>;
 
     /// Get a signer by key ID.
+    ///
+    /// # Errors
+    ///
+    /// Returns error if retrieval fails.
     fn get_signer(&self, key_id: &str) -> TerasResult<Option<&HybridSigner>>;
 
     /// Get a verifying key by key ID.
+    ///
+    /// # Errors
+    ///
+    /// Returns error if retrieval fails.
     fn get_verifying_key(&self, key_id: &str) -> TerasResult<Option<&HybridVerifyingKey>>;
 
     /// List all key IDs.
+    ///
+    /// # Errors
+    ///
+    /// Returns error if listing fails.
     fn list_keys(&self) -> TerasResult<Vec<String>>;
 
     /// Remove a key by ID.
+    ///
+    /// # Errors
+    ///
+    /// Returns error if removal fails.
     fn remove(&mut self, key_id: &str) -> TerasResult<bool>;
 
     /// Check if a key exists.
@@ -129,7 +149,7 @@ impl KeyStore for MemoryKeyStore {
 
 /// Audited key store wrapper.
 ///
-/// Wraps any KeyStore implementation with LAW 8 audit logging.
+/// Wraps any `KeyStore` implementation with LAW 8 audit logging.
 pub struct AuditedKeyStore<S: KeyStore> {
     inner: S,
     audit_log: Arc<std::sync::RwLock<AuditLog>>,

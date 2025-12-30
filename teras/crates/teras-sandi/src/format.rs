@@ -195,7 +195,7 @@ impl PortableSignature {
             timestamp_token: self
                 .timestamp
                 .as_ref()
-                .map(|t| t.to_timestamp_token())
+                .map(PortableTimestamp::to_timestamp_token)
                 .transpose()?,
             document_name: self.document_name.clone(),
             content_type: self.content_type.clone(),
@@ -310,18 +310,13 @@ impl PortableTimestamp {
 }
 
 /// Export format options.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub enum ExportFormat {
     /// Pretty-printed JSON.
+    #[default]
     JsonPretty,
     /// Compact JSON.
     JsonCompact,
-}
-
-impl Default for ExportFormat {
-    fn default() -> Self {
-        Self::JsonPretty
-    }
 }
 
 /// Export a signed document to the specified format.

@@ -120,9 +120,8 @@ pub async fn execute(args: SandiArgs, verbose: bool) -> TerasResult<()> {
             service.generate_key(&key_id)?;
 
             // Parse data (check for @file prefix)
-            let document = if data.starts_with('@') {
-                let path = &data[1..];
-                std::fs::read(path).map_err(|e| teras_core::error::TerasError::IoError(e))?
+            let document = if let Some(path) = data.strip_prefix('@') {
+                std::fs::read(path).map_err(teras_core::error::TerasError::IoError)?
             } else {
                 data.into_bytes()
             };
@@ -191,8 +190,7 @@ pub async fn execute(args: SandiArgs, verbose: bool) -> TerasResult<()> {
             service.generate_key(&key_id)?;
 
             // Parse signature JSON
-            let sig_json = if signature.starts_with('@') {
-                let path = &signature[1..];
+            let sig_json = if let Some(path) = signature.strip_prefix('@') {
                 std::fs::read_to_string(path)?
             } else {
                 signature
@@ -202,8 +200,7 @@ pub async fn execute(args: SandiArgs, verbose: bool) -> TerasResult<()> {
             let signed = service.import(&sig_json)?;
 
             // Parse document data (for hash comparison)
-            let _document = if data.starts_with('@') {
-                let path = &data[1..];
+            let _document = if let Some(path) = data.strip_prefix('@') {
                 std::fs::read(path)?
             } else {
                 data.into_bytes()

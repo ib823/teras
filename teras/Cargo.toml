@@ -82,6 +82,7 @@ teras-jejak = { path = "crates/teras-jejak" }
 teras-suap = { path = "crates/teras-suap" }
 teras-integrasi = { path = "crates/teras-integrasi" }
 teras-sandi = { path = "crates/teras-sandi" }
+teras-benteng = { path = "crates/teras-benteng" }
 
 [profile.release]
 lto = true
