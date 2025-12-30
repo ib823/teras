@@ -1,0 +1,24 @@
+[package]
+name = "teras-lindung"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "TERAS memory protection primitives"
+
+[dependencies]
+teras-core = { workspace = true }
+zeroize = { workspace = true }
+
+[target.'cfg(unix)'.dependencies]
+libc = { workspace = true }
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { workspace = true }
+
+[dev-dependencies]
+# None - tests use only std
+
+[features]
+default = []
+strict-mlock = []  # Panic if mlock fails

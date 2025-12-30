@@ -1,0 +1,10 @@
+[package]
+name = "teras-core"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+# teras-core has NO external dependencies
+# It defines error types and common types only

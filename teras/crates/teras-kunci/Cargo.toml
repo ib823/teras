@@ -1,0 +1,10 @@
+[package]
+name = "teras-kunci"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+teras-core = { workspace = true }
+# Crypto dependencies will be added when implementing

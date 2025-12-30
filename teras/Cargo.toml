@@ -1,0 +1,67 @@
+# EXACT CONTENT FROM PART IV, SKELETON 2 - DO NOT MODIFY
+
+[workspace]
+resolver = "2"
+members = [
+    "crates/teras-core",
+    "crates/teras-kunci",
+    "crates/teras-lindung",
+    "crates/teras-jejak",
+    "crates/teras-suap",
+    "crates/teras-benteng",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.75.0"
+license = "PROPRIETARY"
+repository = "https://github.com/ib823/teras"
+
+[workspace.dependencies]
+# Post-quantum crypto - EXACT VERSIONS
+ml-kem = "=0.2.1"
+ml-dsa = "=0.1.0"
+slh-dsa = "=0.1.0"
+
+# Classical crypto - EXACT VERSIONS
+x25519-dalek = "=2.0.1"
+ed25519-dalek = { version = "=2.1.1", features = ["hazmat"] }
+aes-gcm = "=0.10.3"
+chacha20poly1305 = "=0.10.1"
+sha3 = "=0.10.8"
+sha2 = "=0.10.8"
+blake3 = "=1.5.0"
+hkdf = "=0.12.4"
+argon2 = "=0.5.3"
+
+# Utilities - EXACT VERSIONS
+zeroize = { version = "=1.7.0", features = ["derive"] }
+rand = "=0.8.5"
+rand_core = "=0.6.4"
+subtle = "=2.5.0"
+libc = "=0.2.153"
+windows-sys = { version = "=0.52.0", features = ["Win32_System_Memory"] }
+
+# Threat feed ingestion - EXACT VERSIONS
+reqwest = { version = "=0.11.27", features = ["json", "rustls-tls"], default-features = false }
+tokio = { version = "=1.36.0", features = ["rt-multi-thread", "macros", "time"] }
+serde = { version = "=1.0.197", features = ["derive"] }
+serde_json = "=1.0.114"
+csv = "=1.3.0"
+chrono = { version = "=0.4.35", features = ["serde"] }
+url = "=2.5.0"
+ipnetwork = "=0.20.0"
+
+# Internal crates
+teras-core = { path = "crates/teras-core" }
+teras-kunci = { path = "crates/teras-kunci" }
+teras-lindung = { path = "crates/teras-lindung" }
+teras-jejak = { path = "crates/teras-jejak" }
+teras-suap = { path = "crates/teras-suap" }
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
