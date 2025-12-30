@@ -4,8 +4,27 @@ version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
+description = "TERAS audit logging - tamper-evident hash-chained logs"
 
 [dependencies]
 teras-core = { workspace = true }
+teras-lindung = { workspace = true }
+teras-kunci = { workspace = true }
+
+# Serialization
 serde = { workspace = true }
+serde_json = { workspace = true }
+
+# Time
 chrono = { workspace = true }
+
+# For hash chain
+blake3 = { workspace = true }
+
+[dev-dependencies]
+tempfile = { workspace = true }
+
+[features]
+default = []
+# Enable file-based storage
+file-storage = []

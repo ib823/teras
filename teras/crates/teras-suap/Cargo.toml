@@ -4,10 +4,35 @@ version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
+description = "TERAS threat intelligence feed ingestion - REALITY 6 bootstrap"
 
 [dependencies]
 teras-core = { workspace = true }
+teras-jejak = { workspace = true }
+
+# Serialization
 serde = { workspace = true }
+serde_json = { workspace = true }
+
+# Time
 chrono = { workspace = true }
+
+# HTTP client - using rustls to avoid OpenSSL
+reqwest = { workspace = true }
+
+# Async
+tokio = { workspace = true }
+
+# Parsing
 url = { workspace = true }
-ipnetwork = { workspace = true }
+ipnet = { workspace = true }
+csv = { workspace = true }
+regex = { workspace = true }
+
+[dev-dependencies]
+tempfile = { workspace = true }
+
+[features]
+default = []
+# Enable live feed testing (requires network)
+live-tests = []

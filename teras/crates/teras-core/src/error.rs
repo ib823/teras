@@ -10,12 +10,18 @@ use std::fmt;
 #[derive(Debug)]
 pub enum TerasError {
     // Cryptographic errors
-    InvalidKeyLength { expected: usize, actual: usize },
+    InvalidKeyLength {
+        expected: usize,
+        actual: usize,
+    },
     InvalidSignature,
     DecryptionFailed,
     KeyDerivationFailed,
     RandomGenerationFailed,
-    HybridCryptoFailed { classical_ok: bool, pq_ok: bool },
+    HybridCryptoFailed {
+        classical_ok: bool,
+        pq_ok: bool,
+    },
 
     // Memory errors
     MemoryLockFailed,
@@ -23,8 +29,14 @@ pub enum TerasError {
     ZeroizationFailed,
 
     // Format errors
-    InvalidMagic { expected: u32, actual: u32 },
-    InvalidVersion { expected: u16, actual: u16 },
+    InvalidMagic {
+        expected: u32,
+        actual: u32,
+    },
+    InvalidVersion {
+        expected: u16,
+        actual: u16,
+    },
     InvalidChecksum,
     InvalidFormat(String),
 
@@ -35,17 +47,49 @@ pub enum TerasError {
     TimestampOutOfRange,
 
     // Biometric errors (v3.1)
-    LivenessCheckFailed { score: u8 },
-    DeepfakeDetected { score: u8 },
-    InsufficientSignals { required: u8, provided: u8 },
+    LivenessCheckFailed {
+        score: u8,
+    },
+    DeepfakeDetected {
+        score: u8,
+    },
+    InsufficientSignals {
+        required: u8,
+        provided: u8,
+    },
 
     // Device binding errors (v3.1)
     DeviceNotBound,
     DeviceMismatch,
 
     // Audit errors (v3.1)
-    AuditChainBroken { entry_index: u64 },
+    AuditChainBroken {
+        entry_index: u64,
+    },
     AuditLogFull,
+
+    // Threat feed errors (v3.1)
+    /// Threat feed fetch failed.
+    ThreatFeedFetchFailed {
+        /// Source identifier.
+        source: String,
+        /// Reason for failure.
+        reason: String,
+    },
+    /// Threat feed parse failed.
+    ThreatFeedParseFailed {
+        /// Format that failed to parse.
+        format: String,
+        /// Reason for failure.
+        reason: String,
+    },
+    /// Threat indicator invalid.
+    ThreatIndicatorInvalid {
+        /// The invalid indicator value.
+        indicator: String,
+        /// Reason for invalidity.
+        reason: String,
+    },
 
     // IO errors
     IoError(std::io::Error),
@@ -117,6 +161,15 @@ impl fmt::Display for TerasError {
                 write!(f, "Audit chain broken at entry {}", entry_index)
             }
             Self::AuditLogFull => write!(f, "Audit log storage full"),
+            Self::ThreatFeedFetchFailed { source, reason } => {
+                write!(f, "Threat feed fetch failed for {}: {}", source, reason)
+            }
+            Self::ThreatFeedParseFailed { format, reason } => {
+                write!(f, "Threat feed parse failed for {}: {}", format, reason)
+            }
+            Self::ThreatIndicatorInvalid { indicator, reason } => {
+                write!(f, "Invalid threat indicator '{}': {}", indicator, reason)
+            }
             Self::IoError(e) => write!(f, "IO error: {}", e),
             Self::NetworkError(msg) => write!(f, "Network error: {}", msg),
             Self::PlatformNotSupported(platform) => {

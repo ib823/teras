@@ -70,9 +70,11 @@ mod tests {
     }
 
     #[test]
+    #[allow(clippy::cast_possible_truncation)]
     fn test_zeroize_bytes_random_pattern() {
         let mut data = [0u8; 64];
         for (i, byte) in data.iter_mut().enumerate() {
+            // Intentional truncation to create a pattern
             *byte = (i * 17 + 42) as u8;
         }
         zeroize_bytes(&mut data);

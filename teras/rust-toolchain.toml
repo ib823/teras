@@ -1,3 +1,6 @@
+# DEVIATION-001: Using stable (1.92.0) instead of 1.75.0
+# Reason: PQ crypto crates require edition2024 features
+# See DEVIATIONS.md for full documentation
 [toolchain]
-channel = "stable"
+channel = "1.92.0"
 components = ["rustfmt", "clippy"]
