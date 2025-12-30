@@ -135,11 +135,7 @@ impl SigningService {
     /// # Errors
     ///
     /// Returns error if signing fails.
-    pub fn sign(
-        &mut self,
-        key_id: &str,
-        document: Vec<u8>,
-    ) -> TerasResult<SignedDocument> {
+    pub fn sign(&mut self, key_id: &str, document: Vec<u8>) -> TerasResult<SignedDocument> {
         self.sign_with_options(key_id, document, None, None, None)
     }
 
@@ -243,7 +239,8 @@ impl SigningService {
         original_document: &[u8],
     ) -> TerasResult<VerificationResult> {
         let vk = self.keystore.get_verifying_key(&signed_doc.key_id)?;
-        self.verifier.verify_document(signed_doc, original_document, vk)
+        self.verifier
+            .verify_document(signed_doc, original_document, vk)
     }
 
     /// Verify a signed document with an external verifying key.
@@ -263,7 +260,8 @@ impl SigningService {
         original_document: &[u8],
         verifying_key: &HybridVerifyingKey,
     ) -> TerasResult<VerificationResult> {
-        self.verifier.verify_document(signed_doc, original_document, verifying_key)
+        self.verifier
+            .verify_document(signed_doc, original_document, verifying_key)
     }
 
     // ==================== Document Management ====================
@@ -299,11 +297,12 @@ impl SigningService {
     ///
     /// Returns error if document not found or export fails.
     pub fn export(&self, document_id: &str, format: ExportFormat) -> TerasResult<String> {
-        let doc = self.documents.get(document_id).ok_or_else(|| {
-            TerasError::DocumentNotFound {
+        let doc = self
+            .documents
+            .get(document_id)
+            .ok_or_else(|| TerasError::DocumentNotFound {
                 document_id: document_id.to_string(),
-            }
-        })?;
+            })?;
 
         export_signature(doc, format)
     }
@@ -321,12 +320,7 @@ impl SigningService {
         let doc = import_signature(data)?;
         self.documents.insert(doc.id.to_string(), doc.clone());
 
-        self.log_operation(
-            "import",
-            &doc.id.to_string(),
-            ActionResult::Success,
-            None,
-        )?;
+        self.log_operation("import", &doc.id.to_string(), ActionResult::Success, None)?;
 
         Ok(doc)
     }
@@ -387,7 +381,9 @@ mod tests {
         assert_eq!(info.key_id, "service-key");
 
         // Sign document
-        let signed = service.sign("service-key", b"hello world".to_vec()).unwrap();
+        let signed = service
+            .sign("service-key", b"hello world".to_vec())
+            .unwrap();
         assert_eq!(signed.key_id, "service-key");
 
         // Verify

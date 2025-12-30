@@ -134,6 +134,18 @@ pub enum TerasError {
         /// The document ID that was not found.
         document_id: String,
     },
+
+    // Biometric enrollment/verification errors (v3.1 - Phase 7)
+    /// Biometric enrollment failed.
+    BiometricEnrollmentFailed {
+        /// Reason for failure.
+        reason: String,
+    },
+    /// Biometric verification failed.
+    BiometricVerificationFailed {
+        /// Reason for failure.
+        reason: String,
+    },
 }
 
 impl fmt::Display for TerasError {
@@ -226,6 +238,12 @@ impl fmt::Display for TerasError {
             }
             Self::DocumentNotFound { document_id } => {
                 write!(f, "Document not found: {}", document_id)
+            }
+            Self::BiometricEnrollmentFailed { reason } => {
+                write!(f, "Biometric enrollment failed: {}", reason)
+            }
+            Self::BiometricVerificationFailed { reason } => {
+                write!(f, "Biometric verification failed: {}", reason)
             }
         }
     }

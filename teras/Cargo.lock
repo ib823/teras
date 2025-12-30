@@ -1539,7 +1539,17 @@ dependencies = [
 name = "teras-benteng"
 version = "0.1.0"
 dependencies = [
+ "chrono",
+ "hex",
+ "serde",
+ "serde_json",
+ "tempfile",
  "teras-core",
+ "teras-jejak",
+ "teras-kunci",
+ "teras-lindung",
+ "tokio",
+ "uuid",
 ]
 
 [[package]]

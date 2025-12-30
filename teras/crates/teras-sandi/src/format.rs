@@ -2,7 +2,9 @@
 //!
 //! Provides serialization/deserialization for signed documents.
 
-use crate::types::{SignatureMetadata, SignedDocument, SignedDocumentId, SignatureRequestId, TimestampToken};
+use crate::types::{
+    SignatureMetadata, SignatureRequestId, SignedDocument, SignedDocumentId, TimestampToken,
+};
 use base64::{engine::general_purpose::STANDARD, Engine};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
@@ -159,13 +161,12 @@ impl PortableSignature {
         })?;
 
         // Parse timestamp
-        let signed_at: DateTime<Utc> =
-            DateTime::parse_from_rfc3339(&self.signed_at)
-                .map_err(|e| TerasError::DeserializationFailed {
-                    type_name: "signed_at".to_string(),
-                    reason: e.to_string(),
-                })?
-                .with_timezone(&Utc);
+        let signed_at: DateTime<Utc> = DateTime::parse_from_rfc3339(&self.signed_at)
+            .map_err(|e| TerasError::DeserializationFailed {
+                type_name: "signed_at".to_string(),
+                reason: e.to_string(),
+            })?
+            .with_timezone(&Utc);
 
         // Parse document ID
         let document_id = uuid::Uuid::parse_str(&self.document_id).map_err(|e| {
@@ -191,7 +192,11 @@ impl PortableSignature {
             dilithium_signature,
             ed25519_signature,
             signed_at,
-            timestamp_token: self.timestamp.as_ref().map(|t| t.to_timestamp_token()).transpose()?,
+            timestamp_token: self
+                .timestamp
+                .as_ref()
+                .map(|t| t.to_timestamp_token())
+                .transpose()?,
             document_name: self.document_name.clone(),
             content_type: self.content_type.clone(),
             metadata: self.metadata.as_ref().map(SignatureMetadata::from),
@@ -279,20 +284,20 @@ impl PortableTimestamp {
     ///
     /// Returns error if conversion fails.
     pub fn to_timestamp_token(&self) -> TerasResult<TimestampToken> {
-        let timestamp: DateTime<Utc> =
-            DateTime::parse_from_rfc3339(&self.timestamp)
-                .map_err(|e| TerasError::DeserializationFailed {
-                    type_name: "timestamp".to_string(),
-                    reason: e.to_string(),
-                })?
-                .with_timezone(&Utc);
-
-        let signature = STANDARD.decode(&self.signature).map_err(|e| {
-            TerasError::DeserializationFailed {
-                type_name: "timestamp_signature".to_string(),
+        let timestamp: DateTime<Utc> = DateTime::parse_from_rfc3339(&self.timestamp)
+            .map_err(|e| TerasError::DeserializationFailed {
+                type_name: "timestamp".to_string(),
                 reason: e.to_string(),
-            }
-        })?;
+            })?
+            .with_timezone(&Utc);
+
+        let signature =
+            STANDARD
+                .decode(&self.signature)
+                .map_err(|e| TerasError::DeserializationFailed {
+                    type_name: "timestamp_signature".to_string(),
+                    reason: e.to_string(),
+                })?;
 
         Ok(TimestampToken {
             timestamp,
@@ -397,8 +402,8 @@ mod tests {
             .with_organization("TERAS")
             .with_reason("Approval");
 
-        let request = SignatureRequest::new("meta-key", b"doc with meta".to_vec())
-            .with_metadata(metadata);
+        let request =
+            SignatureRequest::new("meta-key", b"doc with meta".to_vec()).with_metadata(metadata);
 
         let signed = signer.sign(&request).unwrap();
         let portable = PortableSignature::from_signed_document(&signed);

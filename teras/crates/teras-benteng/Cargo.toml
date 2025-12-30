@@ -4,6 +4,23 @@ version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
+description = "TERAS eKYC/Identity Verification - Biometric identity with LAW 1 compliance"
 
 [dependencies]
 teras-core = { workspace = true }
+teras-lindung = { workspace = true }
+teras-kunci = { workspace = true }
+teras-jejak = { workspace = true }
+
+serde = { workspace = true }
+serde_json = { workspace = true }
+chrono = { workspace = true }
+uuid = { workspace = true }
+hex = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true }
+tempfile = "=3.10.1"
+
+[features]
+default = []

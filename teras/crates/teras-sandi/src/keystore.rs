@@ -14,7 +14,12 @@ use teras_kunci::sign::{HybridSigner, HybridVerifyingKey};
 /// Trait for key storage backends.
 pub trait KeyStore: Send + Sync {
     /// Store a keypair.
-    fn store(&mut self, key_id: &str, signer: HybridSigner, vk: HybridVerifyingKey) -> TerasResult<()>;
+    fn store(
+        &mut self,
+        key_id: &str,
+        signer: HybridSigner,
+        vk: HybridVerifyingKey,
+    ) -> TerasResult<()>;
 
     /// Get a signer by key ID.
     fn get_signer(&self, key_id: &str) -> TerasResult<Option<&HybridSigner>>;
@@ -70,7 +75,12 @@ impl Default for MemoryKeyStore {
 }
 
 impl KeyStore for MemoryKeyStore {
-    fn store(&mut self, key_id: &str, signer: HybridSigner, vk: HybridVerifyingKey) -> TerasResult<()> {
+    fn store(
+        &mut self,
+        key_id: &str,
+        signer: HybridSigner,
+        vk: HybridVerifyingKey,
+    ) -> TerasResult<()> {
         // Create metadata
         let info = SigningKeyInfo {
             key_id: key_id.to_string(),
@@ -178,12 +188,7 @@ impl<S: KeyStore> AuditedKeyStore<S> {
     ) -> TerasResult<()> {
         self.inner.store(key_id, signer, vk)?;
 
-        self.log_operation(
-            "store",
-            key_id,
-            ActionResult::Success,
-            None,
-        )?;
+        self.log_operation("store", key_id, ActionResult::Success, None)?;
 
         Ok(())
     }
@@ -232,12 +237,7 @@ impl<S: KeyStore> AuditedKeyStore<S> {
         let removed = self.inner.remove(key_id)?;
 
         if removed {
-            self.log_operation(
-                "remove",
-                key_id,
-                ActionResult::Success,
-                None,
-            )?;
+            self.log_operation("remove", key_id, ActionResult::Success, None)?;
         } else {
             self.log_operation(
                 "remove",

@@ -61,8 +61,8 @@ pub use service::SigningService;
 pub use signer::{DocumentSigner, SignatureRequestBuilder};
 pub use timestamp::{TimestampAuthority, TimestampPolicy};
 pub use types::{
-    SignatureAlgorithm, SignatureMetadata, SignatureRequest, SignatureRequestId,
-    SignedDocument, SignedDocumentId, SigningKeyInfo, TimestampToken, VerificationResult,
+    SignatureAlgorithm, SignatureMetadata, SignatureRequest, SignatureRequestId, SignedDocument,
+    SignedDocumentId, SigningKeyInfo, TimestampToken, VerificationResult,
 };
 pub use verifier::SignatureVerifier;
 
@@ -137,8 +137,8 @@ mod tests {
         let signer = DocumentSigner::new("direct-key", audit_log.clone()).unwrap();
         let verifier = SignatureVerifier::new(audit_log);
 
-        let request = SignatureRequest::new("direct-key", b"direct signing".to_vec())
-            .with_name("test.txt");
+        let request =
+            SignatureRequest::new("direct-key", b"direct signing".to_vec()).with_name("test.txt");
 
         let signed = signer.sign(&request).unwrap();
 

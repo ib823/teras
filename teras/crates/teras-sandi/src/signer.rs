@@ -34,7 +34,10 @@ impl DocumentSigner {
     /// # Errors
     ///
     /// Returns error if key generation fails.
-    pub fn new(key_id: impl Into<String>, audit_log: Arc<std::sync::RwLock<AuditLog>>) -> TerasResult<Self> {
+    pub fn new(
+        key_id: impl Into<String>,
+        audit_log: Arc<std::sync::RwLock<AuditLog>>,
+    ) -> TerasResult<Self> {
         let key_id = key_id.into();
         let (signer, verifying_key) = HybridSigner::generate()?;
 
@@ -108,7 +111,10 @@ impl DocumentSigner {
             self.log_operation(
                 "sign",
                 ActionResult::Failure {
-                    reason: format!("Key ID mismatch: expected {}, got {}", self.key_id, request.key_id),
+                    reason: format!(
+                        "Key ID mismatch: expected {}, got {}",
+                        self.key_id, request.key_id
+                    ),
                     code: None,
                 },
                 Some(Context::new().with_extra("request_id", request.id.to_string())),
@@ -239,9 +245,7 @@ impl DocumentSigner {
         )
         .with_context(context.unwrap_or_default());
 
-        let mut log = audit_log
-            .write()
-            .map_err(|_| TerasError::AuditLogFull)?;
+        let mut log = audit_log.write().map_err(|_| TerasError::AuditLogFull)?;
         log.append(entry)
     }
 }

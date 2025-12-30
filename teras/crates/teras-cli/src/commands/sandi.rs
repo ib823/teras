@@ -85,7 +85,10 @@ pub async fn execute(args: SandiArgs, verbose: bool) -> TerasResult<()> {
             println!("  Algorithm:      {}", info.algorithm);
             println!("  Dilithium PK:   {} bytes", info.dilithium_pk_size);
             println!("  Ed25519 PK:     {} bytes", info.ed25519_pk_size);
-            println!("  Created:        {}", info.created_at.format("%Y-%m-%d %H:%M:%S UTC"));
+            println!(
+                "  Created:        {}",
+                info.created_at.format("%Y-%m-%d %H:%M:%S UTC")
+            );
 
             println!();
             println!("{} Key generated and stored in session.", "OK".green());
@@ -119,9 +122,7 @@ pub async fn execute(args: SandiArgs, verbose: bool) -> TerasResult<()> {
             // Parse data (check for @file prefix)
             let document = if data.starts_with('@') {
                 let path = &data[1..];
-                std::fs::read(path).map_err(|e| {
-                    teras_core::error::TerasError::IoError(e)
-                })?
+                std::fs::read(path).map_err(|e| teras_core::error::TerasError::IoError(e))?
             } else {
                 data.into_bytes()
             };
@@ -140,15 +141,13 @@ pub async fn execute(args: SandiArgs, verbose: bool) -> TerasResult<()> {
                 None
             };
 
-            println!("Signing {} bytes with key {}...", document.len(), key_id.cyan());
+            println!(
+                "Signing {} bytes with key {}...",
+                document.len(),
+                key_id.cyan()
+            );
 
-            let signed = service.sign_with_options(
-                &key_id,
-                document,
-                None,
-                None,
-                metadata,
-            )?;
+            let signed = service.sign_with_options(&key_id, document, None, None, metadata)?;
 
             // Export to portable format
             let json = teras_sandi::export_signature(&signed, ExportFormat::JsonPretty)?;
@@ -159,7 +158,10 @@ pub async fn execute(args: SandiArgs, verbose: bool) -> TerasResult<()> {
                 println!("{}", "Document Signed Successfully".green().bold());
                 println!("  Document ID:  {}", signed.id);
                 println!("  Algorithm:    {}", signed.algorithm);
-                println!("  Signed at:    {}", signed.signed_at.format("%Y-%m-%d %H:%M:%S UTC"));
+                println!(
+                    "  Signed at:    {}",
+                    signed.signed_at.format("%Y-%m-%d %H:%M:%S UTC")
+                );
                 if signed.timestamp_token.is_some() {
                     println!("  Timestamped:  Yes");
                 }
@@ -207,7 +209,10 @@ pub async fn execute(args: SandiArgs, verbose: bool) -> TerasResult<()> {
                 data.into_bytes()
             };
 
-            println!("Verifying signature for document ID: {}...", signed.id.to_string().cyan());
+            println!(
+                "Verifying signature for document ID: {}...",
+                signed.id.to_string().cyan()
+            );
 
             // For demo purposes, we show the verification flow
             // In a real scenario, we'd verify against a stored/imported public key
@@ -216,15 +221,24 @@ pub async fn execute(args: SandiArgs, verbose: bool) -> TerasResult<()> {
             println!("  Document ID:  {}", signed.id);
             println!("  Key ID:       {}", signed.key_id);
             println!("  Algorithm:    {}", signed.algorithm);
-            println!("  Signed at:    {}", signed.signed_at.format("%Y-%m-%d %H:%M:%S UTC"));
-            println!("  Document hash: {}...", hex::encode(&signed.document_hash[..8]));
+            println!(
+                "  Signed at:    {}",
+                signed.signed_at.format("%Y-%m-%d %H:%M:%S UTC")
+            );
+            println!(
+                "  Document hash: {}...",
+                hex::encode(&signed.document_hash[..8])
+            );
 
             if signed.timestamp_token.is_some() {
                 let ts = signed.timestamp_token.as_ref().unwrap();
                 println!();
                 println!("{}", "Timestamp Token:".cyan());
                 println!("  TSA:          {}", ts.tsa_id);
-                println!("  Timestamp:    {}", ts.timestamp.format("%Y-%m-%d %H:%M:%S UTC"));
+                println!(
+                    "  Timestamp:    {}",
+                    ts.timestamp.format("%Y-%m-%d %H:%M:%S UTC")
+                );
                 println!("  Serial:       {}", &ts.serial[..8]);
             }
 

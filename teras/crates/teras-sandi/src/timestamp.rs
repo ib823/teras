@@ -99,8 +99,7 @@ impl TimestampAuthority {
     /// Returns error if verification or audit logging fails.
     pub fn verify(&self, signed_doc: &SignedDocument, token: &TimestampToken) -> TerasResult<bool> {
         // Recreate timestamp data
-        let timestamp_data =
-            self.create_timestamp_data(signed_doc, token.timestamp, &token.serial);
+        let timestamp_data = self.create_timestamp_data(signed_doc, token.timestamp, &token.serial);
 
         // Verify hash
         let expected_sig = blake3_hash(&timestamp_data).to_vec();
