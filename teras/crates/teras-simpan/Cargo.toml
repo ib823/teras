@@ -1,0 +1,40 @@
+[package]
+name = "teras-simpan"
+description = "Persistent storage for TERAS platform - LAW 8 compliance"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+# Internal crates
+teras-core = { workspace = true }
+teras-jejak = { workspace = true }
+teras-kunci = { workspace = true }
+teras-suap = { workspace = true }
+teras-benteng = { workspace = true }
+teras-lindung = { workspace = true }
+
+# Cryptography for at-rest encryption
+aes-gcm = { workspace = true }
+blake3 = { workspace = true }
+rand = { workspace = true }
+zeroize = { workspace = true }
+argon2 = { workspace = true }
+libc = { workspace = true }
+
+# Serialization
+serde = { workspace = true }
+serde_json = { workspace = true }
+toml = "0.8"
+chrono = { workspace = true }
+
+# File system utilities
+tempfile = { workspace = true }
+
+# Error handling
+thiserror = "=1.0.57"
+
+[dev-dependencies]
+tempfile = { workspace = true }

@@ -146,6 +146,45 @@ pub enum TerasError {
         /// Reason for failure.
         reason: String,
     },
+
+    // Storage errors (v3.1 - Phase 9)
+    /// LAW 8 violation - retention requirements not met.
+    Law8Violation {
+        /// Details of the violation.
+        message: String,
+    },
+    /// Configuration error.
+    ConfigError {
+        /// Error message.
+        message: String,
+    },
+    /// Storage corruption detected.
+    StorageCorruption {
+        /// Path to corrupted file.
+        path: String,
+        /// Reason for corruption detection.
+        reason: String,
+    },
+    /// Backup failed.
+    BackupFailed {
+        /// Reason for failure.
+        reason: String,
+    },
+    /// Restore failed.
+    RestoreFailed {
+        /// Reason for failure.
+        reason: String,
+    },
+    /// Identity not found.
+    IdentityNotFound {
+        /// The identity ID that was not found.
+        identity_id: String,
+    },
+    /// Indicator not found.
+    IndicatorNotFound {
+        /// The indicator ID that was not found.
+        indicator_id: String,
+    },
 }
 
 impl fmt::Display for TerasError {
@@ -244,6 +283,27 @@ impl fmt::Display for TerasError {
             }
             Self::BiometricVerificationFailed { reason } => {
                 write!(f, "Biometric verification failed: {}", reason)
+            }
+            Self::Law8Violation { message } => {
+                write!(f, "LAW 8 violation: {}", message)
+            }
+            Self::ConfigError { message } => {
+                write!(f, "Configuration error: {}", message)
+            }
+            Self::StorageCorruption { path, reason } => {
+                write!(f, "Storage corruption in {}: {}", path, reason)
+            }
+            Self::BackupFailed { reason } => {
+                write!(f, "Backup failed: {}", reason)
+            }
+            Self::RestoreFailed { reason } => {
+                write!(f, "Restore failed: {}", reason)
+            }
+            Self::IdentityNotFound { identity_id } => {
+                write!(f, "Identity not found: {}", identity_id)
+            }
+            Self::IndicatorNotFound { indicator_id } => {
+                write!(f, "Indicator not found: {}", indicator_id)
             }
         }
     }

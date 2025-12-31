@@ -12,6 +12,7 @@ members = [
     "crates/teras-benteng",
     "crates/teras-integrasi",
     "crates/teras-sandi",
+    "crates/teras-simpan",
     "crates/teras-cli",
 ]
 
@@ -74,6 +75,10 @@ hex = "=0.4.3"
 base64 = "=0.21.7"
 uuid = { version = "=1.7.0", features = ["v4", "serde"] }
 
+# Storage configuration
+toml = "0.8"
+thiserror = "=1.0.57"
+
 # Internal crates
 teras-core = { path = "crates/teras-core" }
 teras-kunci = { path = "crates/teras-kunci" }
@@ -83,6 +88,7 @@ teras-suap = { path = "crates/teras-suap" }
 teras-integrasi = { path = "crates/teras-integrasi" }
 teras-sandi = { path = "crates/teras-sandi" }
 teras-benteng = { path = "crates/teras-benteng" }
+teras-simpan = { path = "crates/teras-simpan" }
 
 [profile.release]
 lto = true
