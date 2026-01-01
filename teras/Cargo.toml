@@ -14,6 +14,7 @@ members = [
     "crates/teras-sandi",
     "crates/teras-simpan",
     "crates/teras-cli",
+    "crates/teras-nadi",
 ]
 
 [workspace.package]
@@ -79,6 +80,12 @@ uuid = { version = "=1.7.0", features = ["v4", "serde"] }
 toml = "0.8"
 thiserror = "=1.0.57"
 
+# Lazy initialization
+once_cell = "=1.19.0"
+
+# Byte handling
+bytes = "=1.9.0"
+
 # Internal crates
 teras-core = { path = "crates/teras-core" }
 teras-kunci = { path = "crates/teras-kunci" }
@@ -89,6 +96,7 @@ teras-integrasi = { path = "crates/teras-integrasi" }
 teras-sandi = { path = "crates/teras-sandi" }
 teras-benteng = { path = "crates/teras-benteng" }
 teras-simpan = { path = "crates/teras-simpan" }
+teras-nadi = { path = "crates/teras-nadi" }
 
 [profile.release]
 lto = true

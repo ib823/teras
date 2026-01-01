@@ -21,6 +21,9 @@ chrono = { workspace = true }
 # For hash chain
 blake3 = { workspace = true }
 
+# For lazy static globals
+once_cell = { workspace = true }
+
 [dev-dependencies]
 tempfile = { workspace = true }
 

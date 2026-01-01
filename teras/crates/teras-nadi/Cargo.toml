@@ -1,0 +1,40 @@
+[package]
+name = "teras-nadi"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "TERAS NADI - Custom transport protocol for secure threat intelligence sharing"
+
+[dependencies]
+# Internal TERAS crates (NOT external)
+teras-core = { workspace = true }
+teras-kunci = { workspace = true }
+teras-lindung = { workspace = true }
+teras-jejak = { workspace = true }
+
+# Already approved in TERAS ecosystem
+tokio = { workspace = true, features = ["net", "time", "sync", "io-util"] }
+thiserror = { workspace = true }
+rand = { workspace = true }
+once_cell = { workspace = true }
+sha2 = { workspace = true }
+chrono = { workspace = true }
+
+# Byte handling
+bytes = { workspace = true }
+
+[dev-dependencies]
+tempfile = { workspace = true }
+tokio = { workspace = true, features = ["rt-multi-thread", "macros", "test-util"] }
+
+[features]
+default = []
+# Enable onion routing (optional, adds overhead)
+onion = []
+# Enable stealth mode (optional, adds latency jitter)
+stealth = []
+
+[[bench]]
+name = "throughput"
+harness = false

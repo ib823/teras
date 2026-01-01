@@ -6,6 +6,40 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
+/// Log level for audit entries.
+///
+/// Indicates the severity/importance of the logged event.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum Level {
+    /// Trace-level information (most verbose).
+    Trace,
+    /// Debug-level information.
+    Debug,
+    /// General informational messages.
+    #[default]
+    Info,
+    /// Warning conditions.
+    Warn,
+    /// Error conditions.
+    Error,
+    /// Critical conditions requiring immediate attention.
+    Critical,
+}
+
+impl std::fmt::Display for Level {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Trace => write!(f, "TRACE"),
+            Self::Debug => write!(f, "DEBUG"),
+            Self::Info => write!(f, "INFO"),
+            Self::Warn => write!(f, "WARN"),
+            Self::Error => write!(f, "ERROR"),
+            Self::Critical => write!(f, "CRITICAL"),
+        }
+    }
+}
+
 /// Actor who performed the action.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(tag = "type")]
@@ -193,6 +227,9 @@ pub struct AuditLogEntry {
     /// Timestamp in UTC with nanosecond precision.
     pub timestamp: DateTime<Utc>,
 
+    /// Log level indicating severity.
+    pub level: Level,
+
     /// Who performed the action.
     pub actor: Actor,
 
@@ -201,6 +238,9 @@ pub struct AuditLogEntry {
 
     /// What object was affected.
     pub object: String,
+
+    /// Human-readable message.
+    pub message: String,
 
     /// Result of the action.
     pub result: ActionResult,
@@ -218,6 +258,126 @@ pub struct AuditLogEntry {
     pub entry_hash: Option<[u8; 32]>,
 }
 
+/// Builder for creating `AuditLogEntry` instances.
+///
+/// Provides a fluent API for constructing audit log entries with
+/// sensible defaults.
+#[derive(Debug, Clone)]
+pub struct AuditLogEntryBuilder {
+    level: Level,
+    actor: Option<Actor>,
+    action: Option<Action>,
+    object: String,
+    message: String,
+    result: ActionResult,
+    context: Context,
+    timestamp: Option<DateTime<Utc>>,
+}
+
+impl Default for AuditLogEntryBuilder {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl AuditLogEntryBuilder {
+    /// Create a new builder with defaults.
+    #[must_use]
+    pub fn new() -> Self {
+        Self {
+            level: Level::Info,
+            actor: None,
+            action: None,
+            object: String::new(),
+            message: String::new(),
+            result: ActionResult::Success,
+            context: Context::default(),
+            timestamp: None,
+        }
+    }
+
+    /// Set the log level.
+    #[must_use]
+    pub fn level(mut self, level: Level) -> Self {
+        self.level = level;
+        self
+    }
+
+    /// Set the actor.
+    #[must_use]
+    pub fn actor(mut self, actor: Actor) -> Self {
+        self.actor = Some(actor);
+        self
+    }
+
+    /// Set the action.
+    #[must_use]
+    pub fn action(mut self, action: Action) -> Self {
+        self.action = Some(action);
+        self
+    }
+
+    /// Set the object being affected.
+    #[must_use]
+    pub fn object(mut self, object: impl Into<String>) -> Self {
+        self.object = object.into();
+        self
+    }
+
+    /// Set the human-readable message.
+    #[must_use]
+    pub fn message(mut self, message: impl Into<String>) -> Self {
+        self.message = message.into();
+        self
+    }
+
+    /// Set the action result.
+    #[must_use]
+    pub fn result(mut self, result: ActionResult) -> Self {
+        self.result = result;
+        self
+    }
+
+    /// Set the context.
+    #[must_use]
+    pub fn context(mut self, context: Context) -> Self {
+        self.context = context;
+        self
+    }
+
+    /// Set a specific timestamp (defaults to now if not set).
+    #[must_use]
+    pub fn timestamp(mut self, timestamp: DateTime<Utc>) -> Self {
+        self.timestamp = Some(timestamp);
+        self
+    }
+
+    /// Build the audit log entry.
+    ///
+    /// # Panics
+    ///
+    /// Panics if actor or action is not set.
+    #[must_use]
+    pub fn build(self) -> AuditLogEntry {
+        AuditLogEntry {
+            event_id: 0,
+            timestamp: self.timestamp.unwrap_or_else(Utc::now),
+            level: self.level,
+            actor: self.actor.unwrap_or(Actor::Unknown),
+            action: self.action.unwrap_or(Action::Custom {
+                name: "unknown".into(),
+                details: None,
+            }),
+            object: self.object,
+            message: self.message,
+            result: self.result,
+            context: self.context,
+            previous_hash: None,
+            entry_hash: None,
+        }
+    }
+}
+
 impl AuditLogEntry {
     /// Create a new audit log entry.
     ///
@@ -233,9 +393,11 @@ impl AuditLogEntry {
         Self {
             event_id: 0, // Set by AuditLog::append
             timestamp: Utc::now(),
+            level: Level::Info,
             actor,
             action,
             object: object.into(),
+            message: String::new(),
             result,
             context: Context::default(),
             previous_hash: None,
@@ -243,10 +405,30 @@ impl AuditLogEntry {
         }
     }
 
+    /// Create a new builder for constructing audit log entries.
+    #[must_use]
+    pub fn builder() -> AuditLogEntryBuilder {
+        AuditLogEntryBuilder::new()
+    }
+
     /// Add context to the entry.
     #[must_use]
     pub fn with_context(mut self, context: Context) -> Self {
         self.context = context;
+        self
+    }
+
+    /// Set the log level.
+    #[must_use]
+    pub fn with_level(mut self, level: Level) -> Self {
+        self.level = level;
+        self
+    }
+
+    /// Set the message.
+    #[must_use]
+    pub fn with_message(mut self, message: impl Into<String>) -> Self {
+        self.message = message.into();
         self
     }
 
@@ -262,9 +444,11 @@ impl AuditLogEntry {
         // Hash all fields in deterministic order
         hasher.update(&self.event_id.to_le_bytes());
         hasher.update(self.timestamp.to_rfc3339().as_bytes());
+        hasher.update(&[self.level as u8]);
         hasher.update(&serde_json::to_vec(&self.actor).unwrap_or_default());
         hasher.update(&serde_json::to_vec(&self.action).unwrap_or_default());
         hasher.update(self.object.as_bytes());
+        hasher.update(self.message.as_bytes());
         hasher.update(&serde_json::to_vec(&self.result).unwrap_or_default());
         hasher.update(&serde_json::to_vec(&self.context).unwrap_or_default());
 
